@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_11e0rpk" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.6.0">
+  <bpmn:process id="european-disability-parking-card-examination-appointment" name="European Disability Parking Card Examination Appointment" isExecutable="true">
+    <bpmn:startEvent id="start-event">
+      <bpmn:outgoing>SequenceFlow_1ttf4n8</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0j13azk" messageRef="Message_1i5mh5u" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0jee4gs" sourceRef="UT_make-appointment" targetRef="end-event" />
+    <bpmn:sequenceFlow id="SequenceFlow_1ttf4n8" sourceRef="start-event" targetRef="T_determineNumberOfAppointments" />
+    <bpmn:endEvent id="end-event">
+      <bpmn:incoming>SequenceFlow_0jee4gs</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1xviq3h" camunda:expression="${europeanDisabilityParkingCardExaminationAppointmentProcessImpl.sendAppointmentCompleted(execution)}" />
+    </bpmn:endEvent>
+    <bpmn:userTask id="UT_make-appointment" name="Afspraak maken" camunda:formKey="formio:european-disability-parking-card-application-make-appointment-form" camunda:candidateGroups="ROLE_SECRETARIAAT_ZORGLOKET">
+      <bpmn:incoming>SequenceFlow_0d1ojao</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0jee4gs</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1x0kyhd" sourceRef="BRT_determineAppointmentRecommendation" targetRef="Task_08h45u7" />
+    <bpmn:businessRuleTask id="BRT_determineAppointmentRecommendation" name="Afspraakadvies bepalen" camunda:resultVariable="afspraakAkkoord" camunda:decisionRef="keuze_keuringsafspraak" camunda:mapDecisionResult="singleEntry">
+      <bpmn:incoming>SequenceFlow_1f5h46r</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1x0kyhd</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:serviceTask id="T_determineNumberOfAppointments" name="Bepaal aantal afspraakpogingen" camunda:expression="${europeanDisabilityParkingCardApplicationProcessImpl.setNumberOfAppointments(execution)}">
+      <bpmn:incoming>SequenceFlow_1ttf4n8</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1f5h46r</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1f5h46r" sourceRef="T_determineNumberOfAppointments" targetRef="BRT_determineAppointmentRecommendation" />
+    <bpmn:sequenceFlow id="SequenceFlow_0d1ojao" sourceRef="Task_08h45u7" targetRef="UT_make-appointment" />
+    <bpmn:serviceTask id="Task_08h45u7" name="Afspraakadvies opslaan" camunda:expression="${europeanDisabilityParkingCardApplicationProcessImpl.saveAppointmentAdvice(execution)}">
+      <bpmn:incoming>SequenceFlow_1x0kyhd</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0d1ojao</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmn:message id="Message_1i5mh5u" name="start-examination-appointment-message" />
+  <bpmn:message id="Message_0baqk5i" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="european-disability-parking-card-examination-appointment">
+      <bpmndi:BPMNShape id="StartEvent_19ispm7_di" bpmnElement="start-event">
+        <dc:Bounds x="142" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0jee4gs_di" bpmnElement="SequenceFlow_0jee4gs">
+        <di:waypoint x="833" y="100" />
+        <di:waypoint x="892" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1ttf4n8_di" bpmnElement="SequenceFlow_1ttf4n8">
+        <di:waypoint x="178" y="100" />
+        <di:waypoint x="238" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_1w0xbm2_di" bpmnElement="end-event">
+        <dc:Bounds x="892" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_11ugmji_di" bpmnElement="UT_make-appointment">
+        <dc:Bounds x="733" y="60" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1x0kyhd_di" bpmnElement="SequenceFlow_1x0kyhd">
+        <di:waypoint x="503" y="100" />
+        <di:waypoint x="568" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BusinessRuleTask_1r702xf_di" bpmnElement="BRT_determineAppointmentRecommendation">
+        <dc:Bounds x="403" y="60" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1614gby_di" bpmnElement="T_determineNumberOfAppointments">
+        <dc:Bounds x="238" y="60" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1f5h46r_di" bpmnElement="SequenceFlow_1f5h46r">
+        <di:waypoint x="338" y="100" />
+        <di:waypoint x="403" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0d1ojao_di" bpmnElement="SequenceFlow_0d1ojao">
+        <di:waypoint x="668" y="100" />
+        <di:waypoint x="733" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0y29sg8_di" bpmnElement="Task_08h45u7">
+        <dc:Bounds x="568" y="60" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

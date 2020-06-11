@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_0qqz6zb" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.4.1">
+  <bpmn:collaboration id="Collaboration_1qu5a6u">
+    <bpmn:participant id="Participant_0woheh4" name="Verwerk Aanvraag GPK" processRef="european-disability-parking-card-application" />
+  </bpmn:collaboration>
+  <bpmn:process id="european-disability-parking-card-application" name="European Disability Parking Card Application" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_191vj8e">
+      <bpmn:lane id="Lane_0w9ww1v" name="loket parkeren">
+        <bpmn:flowNodeRef>start-event</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UT_send-decision</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExclusiveGateway_13spogf</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EG_fee-paid</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EG_parking-card-stolen-or-lost</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_application-denied</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UT_create-parking-card</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EG_parking-card-approved</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ST_generate-beschikking</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_application-approved</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ST-generate-gpk</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UT_deliver-parking-card-and-register-fee</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ST_register-with-rdw</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_18tvcb4" name="financiën">
+        <bpmn:flowNodeRef>EG_FeePaid</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UT_confirm-fee-paid</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_0uhzyp5" name="secretariaat zorgloket">
+        <bpmn:flowNodeRef>EG_appointment-made</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>MRE_ReturnFromAppointmentProces</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>MSE_StartAppointmentPocess</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_application-canceled</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>informAppointmentCanceled</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_0es48jz" name="arts zorgloket">
+        <bpmn:flowNodeRef>EG_citizen-present</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UT_process-appointment</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:sequenceFlow id="SequenceFlow_05qwadm" sourceRef="start-event" targetRef="EG_parking-card-stolen-or-lost" />
+    <bpmn:sequenceFlow id="parkingCardNotStolen" name="Nee" sourceRef="EG_parking-card-stolen-or-lost" targetRef="EG_fee-paid" />
+    <bpmn:sequenceFlow id="feeNotPaid" name="Nee" sourceRef="EG_fee-paid" targetRef="UT_confirm-fee-paid" />
+    <bpmn:sequenceFlow id="confirmFeePaid" sourceRef="UT_confirm-fee-paid" targetRef="EG_FeePaid" />
+    <bpmn:sequenceFlow id="SF_CitizenPresent" name="Ja" sourceRef="EG_citizen-present" targetRef="ExclusiveGateway_13spogf">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${europeanDisabilityParkingCardApplicationProcessImpl.citizenPresent(execution) == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_1x9h4u4" sourceRef="UT_send-decision" targetRef="ST_generate-beschikking" />
+    <bpmn:sequenceFlow id="SequenceFlow_1innbw4" sourceRef="ExclusiveGateway_13spogf" targetRef="UT_send-decision" />
+    <bpmn:sequenceFlow id="feePaid" name="Ja" sourceRef="EG_fee-paid" targetRef="EG_FeePaid">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${europeanDisabilityParkingCardApplicationProcessImpl.feePaid(execution) == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="parkingCardStolen" name="Ja" sourceRef="EG_parking-card-stolen-or-lost" targetRef="ExclusiveGateway_13spogf">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${europeanDisabilityParkingCardApplicationProcessImpl.parkingCardStolen(execution) == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_0a2ydlq" sourceRef="UT_process-appointment" targetRef="EG_citizen-present" />
+    <bpmn:sequenceFlow id="SequenceFlow_1f24n4n" name="Nee" sourceRef="EG_appointment-made" targetRef="informAppointmentCanceled" />
+    <bpmn:sequenceFlow id="SequenceFlow_038h5ft" name="Ja" sourceRef="EG_appointment-made" targetRef="UT_process-appointment">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${europeanDisabilityParkingCardApplicationProcessImpl.appointmentCreated(execution) == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_0jt6afx" sourceRef="informAppointmentCanceled" targetRef="EndEvent_application-canceled" />
+    <bpmn:sequenceFlow id="SequenceFlow_0atyhes" sourceRef="EG_FeePaid" targetRef="MSE_StartAppointmentPocess" />
+    <bpmn:sequenceFlow id="SF_CitizenNotPresent" sourceRef="EG_citizen-present" targetRef="MSE_StartAppointmentPocess" />
+    <bpmn:sequenceFlow id="SequenceFlow_05ra697" sourceRef="MSE_StartAppointmentPocess" targetRef="MRE_ReturnFromAppointmentProces" />
+    <bpmn:startEvent id="start-event" camunda:formKey="formio:european-disability-parking-card-application-start-form">
+      <bpmn:extensionElements>
+        <camunda:executionListener expression="${europeanDisabilityParkingCardApplicationProcessImpl.setAwaitingPayment(execution)}" event="start" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>SequenceFlow_05qwadm</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="UT_send-decision" name="Beschikking maken en versturen" camunda:formKey="formio:european-disability-parking-card-application-send-ordination-form" camunda:candidateGroups="ROLE_LOKET_PARKEREN">
+      <bpmn:extensionElements>
+        <camunda:taskListener expression="${europeanDisabilityParkingCardApplicationProcessImpl.setOrdinationSent(execution)}" event="complete" />
+        <camunda:taskListener expression="${europeanDisabilityParkingCardApplicationProcessImpl.setAwaitingOrdination(execution)}" event="create" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1innbw4</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1x9h4u4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_13spogf">
+      <bpmn:incoming>parkingCardStolen</bpmn:incoming>
+      <bpmn:incoming>SF_CitizenPresent</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1innbw4</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="EG_citizen-present" name="Inwoner naar afspraak gekomen?" default="SF_CitizenNotPresent">
+      <bpmn:incoming>SequenceFlow_0a2ydlq</bpmn:incoming>
+      <bpmn:outgoing>SF_CitizenPresent</bpmn:outgoing>
+      <bpmn:outgoing>SF_CitizenNotPresent</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="EG_FeePaid">
+      <bpmn:incoming>confirmFeePaid</bpmn:incoming>
+      <bpmn:incoming>feePaid</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0atyhes</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="EG_fee-paid" name="Leges betaald?" default="feeNotPaid">
+      <bpmn:incoming>parkingCardNotStolen</bpmn:incoming>
+      <bpmn:outgoing>feeNotPaid</bpmn:outgoing>
+      <bpmn:outgoing>feePaid</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="UT_confirm-fee-paid" name="Bevestig dat leges zijn betaald" camunda:formKey="formio:european-disability-parking-card-application-confirm-fees-paid-form" camunda:candidateGroups="ROLE_LOKET_PARKEREN">
+      <bpmn:incoming>feeNotPaid</bpmn:incoming>
+      <bpmn:outgoing>confirmFeePaid</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="EG_parking-card-stolen-or-lost" name="Parkeerkaart gestolen of vermist?" default="parkingCardNotStolen">
+      <bpmn:incoming>SequenceFlow_05qwadm</bpmn:incoming>
+      <bpmn:outgoing>parkingCardNotStolen</bpmn:outgoing>
+      <bpmn:outgoing>parkingCardStolen</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_1vjfr78" sourceRef="MRE_ReturnFromAppointmentProces" targetRef="EG_appointment-made" />
+    <bpmn:exclusiveGateway id="EG_appointment-made" name="Afspraak met inwoner gemaakt?" default="SequenceFlow_1f24n4n">
+      <bpmn:incoming>SequenceFlow_1vjfr78</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1f24n4n</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_038h5ft</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:intermediateCatchEvent id="MRE_ReturnFromAppointmentProces">
+      <bpmn:extensionElements>
+        <camunda:executionListener expression="${europeanDisabilityParkingCardApplicationProcessImpl.examinationAppointmentCreated(execution)}" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_05ra697</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1vjfr78</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0tyaldo" messageRef="Message_1t0n3a5" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateThrowEvent id="MSE_StartAppointmentPocess">
+      <bpmn:extensionElements>
+        <camunda:executionListener expression="${europeanDisabilityParkingCardApplicationProcessImpl.setAwaitingAppointmentCreation(execution)}" event="start" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0atyhes</bpmn:incoming>
+      <bpmn:incoming>SF_CitizenNotPresent</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_05ra697</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1xv1zs7" camunda:expression="${europeanDisabilityParkingCardApplicationProcessImpl.startExaminationAppointment(execution)}" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:userTask id="UT_process-appointment" name="Verwerken resultaat afspraak" camunda:formKey="formio:european-disability-parking-card-application-process-appointment-form" camunda:candidateGroups="ROLE_ARTS_ZORGLOKET">
+      <bpmn:extensionElements>
+        <camunda:taskListener expression="${europeanDisabilityParkingCardApplicationProcessImpl.setAwaitingAppointmentResult(execution)}" event="create" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_038h5ft</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0a2ydlq</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="EndEvent_application-canceled">
+      <bpmn:incoming>SequenceFlow_0jt6afx</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="informAppointmentCanceled" name="Informeer dat aanvraag wordt geannuleerd" camunda:expression="${europeanDisabilityParkingCardApplicationProcessImpl.setApplicationCancelled(execution)}">
+      <bpmn:incoming>SequenceFlow_1f24n4n</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0jt6afx</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="EndEvent_application-denied">
+      <bpmn:extensionElements>
+        <camunda:executionListener expression="${europeanDisabilityParkingCardApplicationProcessImpl.setApplicationCompleted(execution)}" event="start" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>decisionNegative</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="UT_create-parking-card" name="Maken GPK" camunda:formKey="formio:european-disability-parking-card-application-card-creation-form" camunda:candidateGroups="ROLE_LOKET_PARKEREN">
+      <bpmn:extensionElements>
+        <camunda:taskListener expression="${europeanDisabilityParkingCardApplicationProcessImpl.setCardReadyForPickUp(execution)}" event="complete" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>decisionPosit</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0up391k</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="EG_parking-card-approved" name="Beschikking toegewezen?" default="decisionNegative">
+      <bpmn:incoming>SequenceFlow_1fvrnr6</bpmn:incoming>
+      <bpmn:outgoing>decisionNegative</bpmn:outgoing>
+      <bpmn:outgoing>decisionPosit</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="decisionNegative" name="Nee" sourceRef="EG_parking-card-approved" targetRef="EndEvent_application-denied" />
+    <bpmn:sequenceFlow id="decisionPosit" name="Ja" sourceRef="EG_parking-card-approved" targetRef="UT_create-parking-card">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${europeanDisabilityParkingCardApplicationProcessImpl.parkingCardApproved(execution) == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_0up391k" sourceRef="UT_create-parking-card" targetRef="ST-generate-gpk" />
+    <bpmn:sequenceFlow id="SequenceFlow_1fvrnr6" sourceRef="ST_generate-beschikking" targetRef="EG_parking-card-approved" />
+    <bpmn:serviceTask id="ST_generate-beschikking" name="Genereer beschikking" camunda:expression="${processDocumentGenerator.generate(execution, &#34;application/pdf&#34;, &#34;Groningen Beschikking.docx&#34;)}">
+      <bpmn:incoming>SequenceFlow_1x9h4u4</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1fvrnr6</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="EndEvent_application-approved">
+      <bpmn:incoming>SequenceFlow_05kzj1m</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_05kzj1m" sourceRef="ST_register-with-rdw" targetRef="EndEvent_application-approved" />
+    <bpmn:sequenceFlow id="SequenceFlow_1xgyub9" sourceRef="UT_deliver-parking-card-and-register-fee" targetRef="ST_register-with-rdw" />
+    <bpmn:sequenceFlow id="SequenceFlow_1alw1cr" sourceRef="ST-generate-gpk" targetRef="UT_deliver-parking-card-and-register-fee" />
+    <bpmn:serviceTask id="ST-generate-gpk" name="Genereer GPK" camunda:expression="${processDocumentGenerator.generate(execution, &#34;application/pdf&#34;, &#34;Groningen GPK.docx&#34;)}">
+      <bpmn:incoming>SequenceFlow_0up391k</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1alw1cr</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="UT_deliver-parking-card-and-register-fee" name="Kaartuitgifte en borgregistratie" camunda:formKey="formio:european-disability-parking-card-application-deliver-card-form" camunda:candidateGroups="ROLE_LOKET_PARKEREN">
+      <bpmn:extensionElements>
+        <camunda:executionListener expression="${europeanDisabilityParkingCardApplicationProcessImpl.setApplicationCompleted(execution)}" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1alw1cr</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1xgyub9</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="ST_register-with-rdw" name="Registratie GPK bij RDW" camunda:expression="${europeanDisabilityParkingCardApplicationProcessImpl.registerParkingCard(execution)}">
+      <bpmn:incoming>SequenceFlow_1xgyub9</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_05kzj1m</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmn:message id="Message_1t0n3a5" name="appointment-completed-message" />
+  <bpmn:message id="Message_1t30iw0" />
+  <bpmn:message id="Message_1d66u04" name="rdw-registration-result-message" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1qu5a6u">
+      <bpmndi:BPMNShape id="Participant_0woheh4_di" bpmnElement="Participant_0woheh4" isHorizontal="true">
+        <dc:Bounds x="160" y="72" width="2330" height="1248" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="start-event">
+        <dc:Bounds x="262" y="296" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_05qwadm_di" bpmnElement="SequenceFlow_05qwadm">
+        <di:waypoint x="298" y="314" />
+        <di:waypoint x="361" y="314" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Lane_0w9ww1v_di" bpmnElement="Lane_0w9ww1v" isHorizontal="true">
+        <dc:Bounds x="190" y="72" width="2300" height="318" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_18tvcb4_di" bpmnElement="Lane_18tvcb4" isHorizontal="true">
+        <dc:Bounds x="190" y="390" width="2300" height="250" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0uhzyp5_di" bpmnElement="Lane_0uhzyp5" isHorizontal="true">
+        <dc:Bounds x="190" y="640" width="2300" height="260" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0es48jz_di" bpmnElement="Lane_0es48jz" isHorizontal="true">
+        <dc:Bounds x="190" y="900" width="2300" height="420" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_0uyuk94_di" bpmnElement="EG_parking-card-stolen-or-lost" isMarkerVisible="true">
+        <dc:Bounds x="361" y="289" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="355" y="346" width="63" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1acuifx_di" bpmnElement="parkingCardNotStolen">
+        <di:waypoint x="411" y="314" />
+        <di:waypoint x="504" y="314" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="365" y="269" width="21" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1nycxkd_di" bpmnElement="EG_fee-paid" isMarkerVisible="true">
+        <dc:Bounds x="504" y="289" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="491" y="267" width="76" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1k3bsxq_di" bpmnElement="feeNotPaid">
+        <di:waypoint x="529" y="339" />
+        <di:waypoint x="529" y="505" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="534" y="489" width="21" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_1f6k260_di" bpmnElement="UT_confirm-fee-paid">
+        <dc:Bounds x="479" y="505" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_04vaa9x_di" bpmnElement="EG_appointment-made" isMarkerVisible="true">
+        <dc:Bounds x="894" y="751" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="874" y="656" width="90" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1hx2n8n_di" bpmnElement="EG_citizen-present" isMarkerVisible="true">
+        <dc:Bounds x="894" y="1195" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="887" y="1252" width="65" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_0axqcou_di" bpmnElement="EG_parking-card-approved" isMarkerVisible="true">
+        <dc:Bounds x="1611" y="289" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1603" y="345" width="66" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_0716bbw_di" bpmnElement="UT_create-parking-card">
+        <dc:Bounds x="1729" y="274" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_1lqz1bp_di" bpmnElement="UT_deliver-parking-card-and-register-fee">
+        <dc:Bounds x="2060" y="274" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_0901zol_di" bpmnElement="UT_send-decision">
+        <dc:Bounds x="1323" y="274" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_13spogf_di" bpmnElement="ExclusiveGateway_13spogf" isMarkerVisible="true">
+        <dc:Bounds x="1205" y="289" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_0qztuii_di" bpmnElement="EG_FeePaid" isMarkerVisible="true">
+        <dc:Bounds x="647" y="520" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1985heo_di" bpmnElement="confirmFeePaid">
+        <di:waypoint x="579" y="545" />
+        <di:waypoint x="647" y="545" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1f24n4n_di" bpmnElement="SequenceFlow_1f24n4n">
+        <di:waypoint x="944" y="776" />
+        <di:waypoint x="1037" y="776" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1004" y="758" width="21" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_1dzfizm_di" bpmnElement="EndEvent_application-canceled">
+        <dc:Bounds x="1182" y="758" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0jt6afx_di" bpmnElement="SequenceFlow_0jt6afx">
+        <di:waypoint x="1137" y="776" />
+        <di:waypoint x="1182" y="776" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_038h5ft_di" bpmnElement="SequenceFlow_038h5ft">
+        <di:waypoint x="919" y="801" />
+        <di:waypoint x="919" y="1000" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="928" y="969" width="12" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0a2ydlq_di" bpmnElement="SequenceFlow_0a2ydlq">
+        <di:waypoint x="919" y="1080" />
+        <di:waypoint x="919" y="1195" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1innbw4_di" bpmnElement="SequenceFlow_1innbw4">
+        <di:waypoint x="1255" y="314" />
+        <di:waypoint x="1323" y="314" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1x9h4u4_di" bpmnElement="SequenceFlow_1x9h4u4">
+        <di:waypoint x="1423" y="314" />
+        <di:waypoint x="1460" y="314" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_1ls4nul_di" bpmnElement="EndEvent_application-approved">
+        <dc:Bounds x="2402" y="296" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_18eg7l7_di" bpmnElement="EndEvent_application-denied">
+        <dc:Bounds x="1761" y="92" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1kdljb3_di" bpmnElement="decisionNegative">
+        <di:waypoint x="1636" y="289" />
+        <di:waypoint x="1636" y="110" />
+        <di:waypoint x="1761" y="110" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1680" y="93" width="21" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0wvar7t_di" bpmnElement="SF_CitizenPresent">
+        <di:waypoint x="944" y="1220" />
+        <di:waypoint x="1230" y="1220" />
+        <di:waypoint x="1230" y="339" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1142" y="1202" width="12" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1k3j5re_di" bpmnElement="feePaid">
+        <di:waypoint x="554" y="314" />
+        <di:waypoint x="672" y="314" />
+        <di:waypoint x="672" y="520" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="608" y="296" width="12" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0qex9za_di" bpmnElement="parkingCardStolen">
+        <di:waypoint x="386" y="289" />
+        <di:waypoint x="386" y="130" />
+        <di:waypoint x="1230" y="130" />
+        <di:waypoint x="1230" y="289" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="802" y="112" width="12" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_1tfom1f_di" bpmnElement="UT_process-appointment">
+        <dc:Bounds x="869" y="1000" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1dlrwio_di" bpmnElement="decisionPosit">
+        <di:waypoint x="1661" y="314" />
+        <di:waypoint x="1729" y="314" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1691" y="296" width="12" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0atyhes_di" bpmnElement="SequenceFlow_0atyhes">
+        <di:waypoint x="672" y="570" />
+        <di:waypoint x="672" y="758" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_07hq5x7_di" bpmnElement="SF_CitizenNotPresent">
+        <di:waypoint x="894" y="1220" />
+        <di:waypoint x="672" y="1220" />
+        <di:waypoint x="672" y="794" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="IntermediateThrowEvent_05mkpa2_di" bpmnElement="MSE_StartAppointmentPocess">
+        <dc:Bounds x="654" y="758" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_05ra697_di" bpmnElement="SequenceFlow_05ra697">
+        <di:waypoint x="690" y="776" />
+        <di:waypoint x="782" y="776" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="IntermediateCatchEvent_1p166t6_di" bpmnElement="MRE_ReturnFromAppointmentProces">
+        <dc:Bounds x="782" y="758" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1vjfr78_di" bpmnElement="SequenceFlow_1vjfr78">
+        <di:waypoint x="818" y="776" />
+        <di:waypoint x="894" y="776" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_1nn1lgv_di" bpmnElement="ST_register-with-rdw">
+        <dc:Bounds x="2230" y="274" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1iwv5iq_di" bpmnElement="informAppointmentCanceled">
+        <dc:Bounds x="1037" y="736" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0up391k_di" bpmnElement="SequenceFlow_0up391k">
+        <di:waypoint x="1829" y="314" />
+        <di:waypoint x="1890" y="314" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1xgyub9_di" bpmnElement="SequenceFlow_1xgyub9">
+        <di:waypoint x="2160" y="314" />
+        <di:waypoint x="2230" y="314" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_05kzj1m_di" bpmnElement="SequenceFlow_05kzj1m">
+        <di:waypoint x="2330" y="314" />
+        <di:waypoint x="2402" y="314" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1fvrnr6_di" bpmnElement="SequenceFlow_1fvrnr6">
+        <di:waypoint x="1560" y="314" />
+        <di:waypoint x="1611" y="314" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0sx938u_di" bpmnElement="ST_generate-beschikking">
+        <dc:Bounds x="1460" y="274" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1alw1cr_di" bpmnElement="SequenceFlow_1alw1cr">
+        <di:waypoint x="1990" y="314" />
+        <di:waypoint x="2060" y="314" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0rgiq0m_di" bpmnElement="ST-generate-gpk">
+        <dc:Bounds x="1890" y="274" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

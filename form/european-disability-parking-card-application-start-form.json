@@ -1,0 +1,375 @@
+{
+    "display": "form",
+    "components": [
+        {
+            "legend": "Inwoner",
+            "tableView": false,
+            "key": "citizen",
+            "type": "fieldset",
+            "label": "In",
+            "input": false,
+            "components": [
+                {
+                    "key": "examinationAppointmentPreference.date",
+                    "tags": [],
+                    "type": "hidden",
+                    "input": true,
+                    "label": "examinationAppointmentPreference.date",
+                    "logic": [],
+                    "hidden": false,
+                    "prefix": "",
+                    "suffix": "",
+                    "unique": false,
+                    "widget": {
+                        "type": "input"
+                    },
+                    "dbIndex": false,
+                    "overlay": {
+                        "top": "",
+                        "left": "",
+                        "page": "",
+                        "style": "",
+                        "width": "",
+                        "height": ""
+                    },
+                    "tooltip": "",
+                    "disabled": false,
+                    "multiple": false,
+                    "redrawOn": "",
+                    "tabindex": "",
+                    "validate": {
+                        "custom": "",
+                        "unique": false,
+                        "multiple": false,
+                        "required": false,
+                        "customPrivate": false,
+                        "strictDateValidation": false
+                    },
+                    "autofocus": false,
+                    "encrypted": false,
+                    "hideLabel": false,
+                    "inputType": "hidden",
+                    "modalEdit": false,
+                    "protected": false,
+                    "refreshOn": "",
+                    "tableView": false,
+                    "attributes": {},
+                    "errorLabel": "",
+                    "persistent": true,
+                    "properties": {},
+                    "validateOn": "change",
+                    "clearOnHide": true,
+                    "conditional": {
+                        "eq": "",
+                        "show": null,
+                        "when": null
+                    },
+                    "customClass": "",
+                    "description": "",
+                    "placeholder": "",
+                    "defaultValue": "",
+                    "labelPosition": "top",
+                    "showCharCount": false,
+                    "showWordCount": false,
+                    "calculateValue": "",
+                    "calculateServer": false,
+                    "allowMultipleMasks": false,
+                    "customDefaultValue": "value = 'onbekend';",
+                    "allowCalculateOverride": false
+                },
+                {
+                    "key": "examinationAppointmentPreference.timeSlot",
+                    "tags": [],
+                    "type": "hidden",
+                    "input": true,
+                    "label": "examinationAppointmentPreference.timeSlot",
+                    "logic": [],
+                    "hidden": false,
+                    "prefix": "",
+                    "suffix": "",
+                    "unique": false,
+                    "widget": {
+                        "type": "input"
+                    },
+                    "dbIndex": false,
+                    "overlay": {
+                        "top": "",
+                        "left": "",
+                        "page": "",
+                        "style": "",
+                        "width": "",
+                        "height": ""
+                    },
+                    "tooltip": "",
+                    "disabled": false,
+                    "multiple": false,
+                    "redrawOn": "",
+                    "tabindex": "",
+                    "validate": {
+                        "custom": "",
+                        "unique": false,
+                        "multiple": false,
+                        "required": false,
+                        "customPrivate": false,
+                        "strictDateValidation": false
+                    },
+                    "autofocus": false,
+                    "encrypted": false,
+                    "hideLabel": false,
+                    "inputType": "hidden",
+                    "modalEdit": false,
+                    "protected": false,
+                    "refreshOn": "",
+                    "tableView": false,
+                    "attributes": {},
+                    "errorLabel": "",
+                    "persistent": true,
+                    "properties": {},
+                    "validateOn": "change",
+                    "clearOnHide": true,
+                    "conditional": {
+                        "eq": "",
+                        "show": null,
+                        "when": null
+                    },
+                    "customClass": "",
+                    "description": "",
+                    "placeholder": "",
+                    "defaultValue": "",
+                    "labelPosition": "top",
+                    "showCharCount": false,
+                    "showWordCount": false,
+                    "calculateValue": "",
+                    "calculateServer": false,
+                    "allowMultipleMasks": false,
+                    "customDefaultValue": "value = 'onbekend';",
+                    "allowCalculateOverride": false
+                },
+                {
+                    "label": "Status",
+                    "spellcheck": true,
+                    "tableView": true,
+                    "hidden": true,
+                    "defaultValue": "NEW",
+                    "validate": {
+                        "unique": false,
+                        "multiple": false
+                    },
+                    "key": "status",
+                    "type": "textfield",
+                    "input": true
+                },
+                {
+                    "label": "BSN",
+                    "mask": false,
+                    "spellcheck": true,
+                    "tableView": false,
+                    "delimiter": false,
+                    "requireDecimal": false,
+                    "inputFormat": "plain",
+                    "validate": {
+                        "unique": false,
+                        "multiple": false
+                    },
+                    "key": "citizen.bsn",
+                    "type": "number",
+                    "input": true
+                },
+                {
+                    "label": "Voornaam",
+                    "spellcheck": true,
+                    "tableView": true,
+                    "validate": {
+                        "unique": false,
+                        "multiple": false
+                    },
+                    "key": "citizen.firstName",
+                    "type": "textfield",
+                    "input": true
+                },
+                {
+                    "label": "Achternaam",
+                    "spellcheck": true,
+                    "tableView": true,
+                    "validate": {
+                        "unique": false,
+                        "multiple": false
+                    },
+                    "key": "citizen.lastName",
+                    "type": "textfield",
+                    "input": true
+                },
+                {
+                    "label": "Telefoonnummer",
+                    "spellcheck": true,
+                    "tableView": true,
+                    "validate": {
+                        "unique": false,
+                        "multiple": false
+                    },
+                    "key": "citizen.contactDetails.phoneNumber",
+                    "type": "textfield",
+                    "input": true
+                },
+                {
+                    "label": "E-mailadres",
+                    "spellcheck": true,
+                    "tableView": true,
+                    "validate": {
+                        "unique": false,
+                        "multiple": false
+                    },
+                    "key": "citizen.contactDetails.emailAddress",
+                    "type": "email",
+                    "input": true
+                },
+                {
+                    "label": "Straatnaam",
+                    "spellcheck": true,
+                    "tableView": true,
+                    "validate": {
+                        "unique": false,
+                        "multiple": false
+                    },
+                    "key": "citizen.address.street",
+                    "type": "textfield",
+                    "input": true
+                },{
+                    "label": "Huisnummer",
+                    "spellcheck": true,
+                    "tableView": true,
+                    "validate": {
+                        "unique": false,
+                        "multiple": false
+                    },
+                    "key": "citizen.address.number",
+                    "type": "textfield",
+                    "input": true
+                },{
+                    "label": "Toevoeging",
+                    "spellcheck": true,
+                    "tableView": true,
+                    "validate": {
+                        "unique": false,
+                        "multiple": false
+                    },
+                    "key": "citizen.address.addition",
+                    "type": "textfield",
+                    "input": true
+                },
+                {
+                    "label": "Postcode",
+                    "spellcheck": true,
+                    "tableView": true,
+                    "validate": {
+                        "unique": false,
+                        "multiple": false
+                    },
+                    "key": "citizen.address.postcode",
+                    "type": "textfield",
+                    "input": true
+                },
+                {
+                    "label": "Woonplaats",
+                    "spellcheck": true,
+                    "tableView": true,
+                    "validate": {
+                        "unique": false,
+                        "multiple": false
+                    },
+                    "key": "citizen.address.city",
+                    "type": "textfield",
+                    "input": true
+                }
+            ],
+            "path": "citizen"
+        },
+        {
+            "legend": "Application",
+            "tableView": false,
+            "key": "application",
+            "type": "fieldset",
+            "label": "Ap",
+            "input": false,
+            "components": [
+                {
+                    "label": "Type kaart",
+                    "key": "application.cardType",
+                    "data": {
+                        "values": [
+                            {
+                                "label": "Bestuurder",
+                                "value": "GPKB"
+                            },
+                            {
+                                "label": "Passagier",
+                                "value": "GPKP"
+                            },
+                            {
+                                "label": "Combinatie (Bestuurder + Passagier)",
+                                "value": "GPKBP"
+                            }
+                        ]
+                    },
+                    "type": "select",
+                    "input": true,
+                    "widget": "choicesjs",
+                    "validate": {
+                        "required": true,
+                        "multiple": false,
+                        "unique": false
+                    },
+                    "tableView": false,
+                    "defaultValue": "GPKB",
+                    "searchEnabled": false,
+                    "validateOn": "change"
+                },
+                {
+                    "label": "Leges",
+                    "mask": false,
+                    "spellcheck": true,
+                    "tableView": false,
+                    "delimiter": false,
+                    "decimalLimit": 2,
+                    "requireDecimal": false,
+                    "defaultValue": 105.37,
+                    "inputFormat": "plain",
+                    "validate": {
+                        "required": true,
+                        "unique": false,
+                        "multiple": false
+                    },
+                    "key": "application.fee.amount",
+                    "type": "number",
+                    "input": true
+                },
+                {
+                    "label": "Munteenheid",
+                    "spellcheck": true,
+                    "tableView": true,
+                    "validate": {
+                        "unique": false,
+                        "multiple": false
+                    },
+                    "key": "application.fee.currency",
+                    "type": "textfield",
+                    "input": true,
+                    "defaultValue": "EURO"
+                }
+            ],
+            "path": "application"
+        },
+        {
+            "type": "button",
+            "label": "Start dossier",
+            "key": "submit",
+            "disableOnInvalid": true,
+            "input": true,
+            "tableView": false,
+            "validate": {
+                "unique": false,
+                "multiple": false
+            }
+        }
+    ]
+}

@@ -1,0 +1,238 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "new-european-disability-parking-card-application.schema",
+    "title": "Aanvraag Europese GPK",
+    "type": "object",
+    "additionalProperties": true,
+    "properties": {
+        "status": {
+            "type": "string",
+            "enum": [
+                "NEW", "AWAITING_PAYMENT", "AWAITING_APPOINTMENT_CREATION", "AWAITING_APPOINTMENT_RESULT", "AWAITING_ORDINATION", "ORDINATION_SENT", "CARD_READY_FOR_PICK_UP", "CANCELLED", "COMPLETED"
+            ]
+        },
+        "citizen": {
+            "$ref": "#/definitions/citizen"
+        },
+        "application": {
+            "$ref": "#/definitions/application"
+        },
+        "examinationAppointmentPreference": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "timeSlot": {
+                    "type": "string"
+                }
+            },
+            "required": []
+        },
+        "examinationAppointment": {
+            "$ref": "#/definitions/examinationAppointment"
+        },
+        "examinationAppointments": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/examinationAppointment"
+            }
+        },
+        "examination": {
+            "$ref": "#/definitions/examination"
+        },
+        "ordination": {
+            "$ref": "#/definitions/ordination"
+        },
+        "card": {
+            "$ref": "#/definitions/card"
+        }
+    },
+    "required": ["citizen", "application"],
+    "definitions": {
+        "citizen": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "bsn": {
+                    "type": "number"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "contactDetails": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "phoneNumber": {
+                            "type": "string"
+                        },
+                        "emailAddress": {
+                            "type": "string"
+                        }
+                    },
+                    "required": ["phoneNumber", "emailAddress"]
+                },
+                "address": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "street": {
+                            "type": "string"
+                        },
+                        "number": {
+                            "type": "string"
+                        },
+                        "addition": {
+                            "type": "string"
+                        },
+                        "postcode": {
+                            "type": "string"
+                        },
+                        "city": {
+                            "type": "string"
+                        }
+                    },
+                    "required": ["street", "number", "postcode", "city"]
+                }
+            },
+            "required": ["bsn", "firstName", "lastName", "contactDetails", "address"]
+        },
+        "application": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "applicationDateTime": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "cardType" : {
+                    "type": "string",
+                    "enum": [
+                        "GPKB", "GPKP", "GPKBP"
+                    ],
+                    "default": "GPKB"
+                },
+                "fee": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "amount": {
+                            "type": "number"
+                        },
+                        "currency": {
+                            "type": "string"
+                        }
+                    },
+                    "required": ["amount", "currency"]
+                },
+                "feePaid": {
+                    "type": "boolean",
+                    "default": false
+                }
+            },
+            "required": ["cardType", "fee"]
+        },
+        "examinationAppointment": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "appointmentDateTime": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "examinerName": {
+                    "type": "string"
+                },
+                "appointmentAdvice": {
+                    "type": "boolean"
+                },
+                "appointmentRefused": {
+                    "type": "boolean"
+                }
+            },
+            "required": []
+        },
+        "examination": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "citizenPresent": {
+                  "type": "boolean"
+                },
+                "assessment": {
+                    "type": "string",
+                    "enum": [
+                        "APPLICABLE", "NOT_APPLICABLE"
+                    ]
+                },
+                "reassessmentRequired": {
+                    "type": "boolean"
+                },
+                "expiryDateAssessment": {
+                    "type": "string"
+                }
+            },
+            "anyOf": [
+                {
+                    "not": {
+                        "properties": {
+                            "citizenPresent": false
+                        },
+                        "required": ["assessment", "reassessmentRequired", "expiryDateAssessment"]
+                    }
+                },
+                { "required": ["citizenPresent"] }
+            ]
+        },
+        "ordination": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "sentDateTime": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "required": ["sentDateTime"]
+        },
+        "card": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "issueDate": {
+                    "type": "string"
+                },
+                "cardNumber": {
+                    "type": "string"
+                },
+                "deposit": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "amount": {
+                            "type": "number"
+                        },
+                        "currency": {
+                            "type": "string",
+                            "default": "EUR"
+                        },
+                        "paymentMethod": {
+                            "type": "string",
+                            "enum": ["CASH", "PIN"]
+                        }
+                    },
+                    "required": ["amount", "paymentMethod"]
+                },
+                "rdwParentRightId" : {
+                    "type": "string"
+                }
+            },
+            "required": ["issueDate", "cardNumber", "deposit"]
+        }
+    }
+}
